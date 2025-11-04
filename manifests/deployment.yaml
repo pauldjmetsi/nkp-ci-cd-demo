@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nkp-demo
-        image: ghcr.io/<YOUR_USER_NAME>/nkp-ci-cd-demo:v202511041142  # CI build tag
+        image: ghcr.io/pauldjmetsi/nkp-ci-cd-demo:v202511041158
         ports:
         - containerPort: 8080
         env:
