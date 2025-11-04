@@ -55,9 +55,15 @@ jobs:
     - name: Update deployment.yaml with new versions
       run: |
         DEPLOYMENT_FILE=manifests/deployment.yaml
-        sed -i "s#image:.*#image: ghcr.io/${{ github.repository }}:${{ steps.build_version.outputs.build_version }}#g" $DEPLOYMENT_FILE
-        sed -i "s#\(name: APP_VERSION\)\n\s*value:.*#\1\n        value: \"${{ steps.app_version.outputs.app_version }}\"#g" $DEPLOYMENT_FILE
-        sed -i "s#\(name: BUILD_VERSION\)\n\s*value:.*#\1\n        value: \"${{ steps.build_version.outputs.build_version }}\"#g" $DEPLOYMENT_FILE
+
+        # Replace image placeholder
+        sed -i "s#__BUILD_VERSION__#${{ steps.build_version.outputs.build_version }}#g" $DEPLOYMENT_FILE
+
+        # Replace APP_VERSION placeholder
+        sed -i "s#__APP_VERSION__#${{ steps.app_version.outputs.app_version }}#g" $DEPLOYMENT_FILE
+
+        # Replace BUILD_VERSION placeholder
+        sed -i "s#__BUILD_VERSION__#${{ steps.build_version.outputs.build_version }}#g" $DEPLOYMENT_FILE
 
     - name: Commit updated deployment.yaml
       run: |
