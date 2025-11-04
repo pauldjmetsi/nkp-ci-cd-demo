@@ -24,41 +24,45 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Log in to GitHub Container Registry
+    - name: Log in to GHCR
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Extract version
-      id: version
+    - name: Extract APP_VERSION from Dockerfile
+      id: app_version
       run: |
-        VERSION="v$(date +%Y%m%d%H%M)"
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        VERSION=$(grep 'ENV APP_VERSION' Dockerfile | awk '{print $3}')
+        echo "app_version=$VERSION" >> $GITHUB_OUTPUT
 
-    - name: Build and push Docker image (multi-arch)
+    - name: Generate BUILD_VERSION
+      id: build_version
+      run: |
+        BUILD="v$(date +%Y%m%d%H%M)"
+        echo "build_version=$BUILD" >> $GITHUB_OUTPUT
+
+    - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         push: true
         platforms: linux/amd64,linux/arm64
         tags: |
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.build_version.outputs.build_version }}
 
-    - name: Update deployment.yaml with new image and build version
+    - name: Update deployment.yaml with new versions
       run: |
-        # Update image tag
-        sed -i "s#image:.*#image: ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}#g" $DEPLOYMENT_FILE
+        DEPLOYMENT_FILE=manifests/deployment.yaml
+        sed -i "s#image:.*#image: ghcr.io/${{ github.repository }}:${{ steps.build_version.outputs.build_version }}#g" $DEPLOYMENT_FILE
+        sed -i "s#\(name: APP_VERSION\)\n\s*value:.*#\1\n        value: \"${{ steps.app_version.outputs.app_version }}\"#g" $DEPLOYMENT_FILE
+        sed -i "s#\(name: BUILD_VERSION\)\n\s*value:.*#\1\n        value: \"${{ steps.build_version.outputs.build_version }}\"#g" $DEPLOYMENT_FILE
 
-        # Update BUILD_VERSION env value
-        sed -i "s#\(name: BUILD_VERSION\)\n\s*value:.*#\1\n        value: \"${{ steps.version.outputs.version }}\"#g" $DEPLOYMENT_FILE
-
-
-    - name: Commit and push updated manifest
+    - name: Commit updated deployment.yaml
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add $DEPLOYMENT_FILE
-        git commit -m "Update image and BUILD_VERSION to ${{ steps.version.outputs.version }}"
+        git commit -m "Update image, APP_VERSION and BUILD_VERSION"
         git push
