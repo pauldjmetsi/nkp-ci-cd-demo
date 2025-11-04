@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: nkp-demo
-          image: ghcr.io/pauldjmetsi/nkp-ci-cd-demo:v202511041135
+          image: ghcr.io/pauldjmetsi/nkp-ci-cd-demo:v202511041142
           ports:
             - containerPort: 8080
           env:
             - name: APP_VERSION
-              value: "v202511041135"
+              value: "v202511041142"
 ---
 apiVersion: v1
 kind: Service
