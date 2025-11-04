@@ -49,7 +49,8 @@ jobs:
     - name: Update deployment.yaml with new image and build version
       run: |
         sed -i "s#image:.*#image: ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}#g" $DEPLOYMENT_FILE
-        sed -i "s/value: \".*\"/value: \"${{ steps.version.outputs.version }}\"/" $DEPLOYMENT_FILE
+        # Only update BUILD_VERSION env
+        sed -i "s/name: BUILD_VERSION.*/name: BUILD_VERSION\n        value: \"${{ steps.version.outputs.version }}\"/" $DEPLOYMENT_FILE
 
     - name: Commit and push updated manifest
       run: |
