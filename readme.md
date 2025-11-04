@@ -1,5 +1,5 @@
 # Nutanix NKP CI/CD Demo App
-This app can be used to demonstrate NKP's Continuous Delivery. The app displays a web page with the following: 
+This Flask app can be used to demonstrate NKP's Continuous Delivery. The Flask app displays a web page with the following: 
 
 ***Hello from NKP Demo!***
 
