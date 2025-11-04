@@ -2,9 +2,10 @@
 This app can be used to demonstrate NKP's Continuous Delivery. 
 
 ## Pre-Demo Steps
-In NKP create a workspace, project, and CD config for the demo app
-Add a cluster to the workspace and project 
-Check the app have been deployed to the cluster. This can be done by going to the Kubernetes Dashboard and finding the deployed pods and service for the app. 
+1. In NKP create a workspace, project, and CD config for the demo app
+2. Add a cluster to the workspace and project 
+3. Check the app have been deployed to the cluster. This can be done by going to the Kubernetes Dashboard and finding the deployed pods and 4. 4. service for the app. 
+
 
 ## Demo Steps
 1. From NKP go to the Project and Continuous Delivery for the app. 
