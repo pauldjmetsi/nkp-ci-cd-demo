@@ -1,5 +1,12 @@
 # Nutanix NKP CI/CD Demo App
-This app can be used to demonstrate NKP's Continuous Delivery. 
+This app can be used to demonstrate NKP's Continuous Delivery. The app displays a web page with the following: 
+
+***Hello from NKP Demo!***
+
+***App Version: <app_version> (Build: <build_version>)***
+
+The *app_version* you manually update in the Dockerfile as part of the demo. The *build_version* is dynamically created from the pipeline using the current date and time. 
+
 
 ## Pre-Demo Steps
 1. In NKP create a workspace, project, and CD config for the demo app
