@@ -9,8 +9,9 @@ COPY app/requirements.txt .
 RUN pip install -r requirements.txt
 COPY app/ .
 
-# Expose port and set env
-ENV APP_VERSION=v1.0
+# Human-readable app version
+ENV APP_VERSION=v1.1
+
 EXPOSE 8080
 
 CMD ["python", "app.py"]
