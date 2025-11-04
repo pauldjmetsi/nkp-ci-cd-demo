@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nkp-demo
-          image: ghcr.io/pauldjmetsi/nkp-ci-cd-demo:__BUILD_VERSION__
+          image: ghcr.io/<YOUR_USER_NAME>/nkp-ci-cd-demo:__BUILD_VERSION__
           ports:
             - containerPort: 8080
           env:
@@ -24,3 +24,18 @@ spec:
               value: "__APP_VERSION__"
             - name: BUILD_VERSION
               value: "__BUILD_VERSION__"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nkp-demo-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nkp-demo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
