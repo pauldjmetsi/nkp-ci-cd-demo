@@ -1,39 +1,10 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nkp-demo-app
-  labels:
-    app: nkp-demo
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nkp-demo
-  template:
-    metadata:
-      labels:
-        app: nkp-demo
-    spec:
-      containers:
-      - name: nkp-demo
-        image: ghcr.io/pauldjmetsi/nkp-ci-cd-demo:v202511041215
-        ports:
-        - containerPort: 8080
-        env:
-        - name: APP_VERSION
-          value: "v1.1"               # extracted from Dockerfile
-        - name: BUILD_VERSION
-          value: "v202511041215"             # CI-generated
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nkp-demo-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: nkp-demo
+containers:
+- name: nkp-demo
+  image: ghcr.io/<YOUR_USER_NAME>/nkp-ci-cd-demo:v202511041229
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
+  - containerPort: 8080
+  env:
+  - name: APP_VERSION
+    value: "v1.2"
+  - name: BUILD_VERSION
+    value: "v202511041229"
