@@ -1,0 +1,10 @@
+containers:
+- name: nkp-demo
+  image: ghcr.io/<YOUR_USER_NAME>/nkp-ci-cd-demo:__BUILD_VERSION__
+  ports:
+  - containerPort: 8080
+  env:
+  - name: APP_VERSION
+    value: "__APP_VERSION__"
+  - name: BUILD_VERSION
+    value: "__BUILD_VERSION__"

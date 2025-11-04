@@ -34,7 +34,7 @@ jobs:
     - name: Extract APP_VERSION from Dockerfile
       id: app_version
       run: |
-        VERSION=$(grep 'ENV APP_VERSION' Dockerfile | awk '{print $3}')
+        VERSION=$(grep -i 'ENV APP_VERSION' Dockerfile | awk -F= '{gsub(/ /,"",$2); print $2}')
         echo "app_version=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Generate BUILD_VERSION
@@ -52,18 +52,15 @@ jobs:
         tags: |
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.build_version.outputs.build_version }}
 
-    - name: Update deployment.yaml with new versions
+    - name: Update deployment.yaml from template
       run: |
-        DEPLOYMENT_FILE=manifests/deployment.yaml
+        # Copy template to deployment.yaml
+        cp manifests/deployment.yaml.template manifests/deployment.yaml
 
-        # Replace image placeholder
-        sed -i "s#__BUILD_VERSION__#${{ steps.build_version.outputs.build_version }}#g" $DEPLOYMENT_FILE
-
-        # Replace APP_VERSION placeholder
-        sed -i "s#__APP_VERSION__#${{ steps.app_version.outputs.app_version }}#g" $DEPLOYMENT_FILE
-
-        # Replace BUILD_VERSION placeholder
-        sed -i "s#__BUILD_VERSION__#${{ steps.build_version.outputs.build_version }}#g" $DEPLOYMENT_FILE
+        # Replace placeholders with actual versions
+        sed -i "s#__APP_VERSION__#${{ steps.app_version.outputs.app_version }}#g" manifests/deployment.yaml
+        sed -i "s#__BUILD_VERSION__#${{ steps.build_version.outputs.build_version }}#g" manifests/deployment.yaml
+        sed -i "s#__BUILD_VERSION__#${{ steps.build_version.outputs.build_version }}#g" manifests/deployment.yaml  # for image
 
     - name: Commit updated deployment.yaml
       run: |
