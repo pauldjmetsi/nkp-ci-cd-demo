@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nkp-demo-app
+  labels:
+    app: nkp-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nkp-demo
+  template:
+    metadata:
+      labels:
+        app: nkp-demo
+    spec:
+      containers:
+        - name: nkp-demo
+          image: ghcr.io/pauldjmetsi/nkp-ci-cd-demo:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "v1.0"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nkp-demo-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nkp-demo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
