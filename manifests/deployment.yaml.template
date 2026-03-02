@@ -26,8 +26,8 @@ spec:
               value: "__BUILD_VERSION__"
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "256Mi"
+              cpu: "200m"
             limits:
               memory: "256Mi"
               cpu: "200m"
