@@ -24,6 +24,13 @@ spec:
               value: "v1.7"
             - name: BUILD_VERSION
               value: "v202602191008"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
 
 ---
 
