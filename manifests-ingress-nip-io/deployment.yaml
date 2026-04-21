@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cicd-demo-app
+  labels:
+    app: cicd-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cicd-demo
+  template:
+    metadata:
+      labels:
+        app: cicd-demo
+    spec:
+      containers:
+        - name: cicd-demo
+          image: ghcr.io/pauldjmetsi/nkp-ci-cd-demo:v202603021059
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "v1.9"
+            - name: BUILD_VERSION
+              value: "v202603021059"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cicd-demo-service
+spec:
+  type: ClusterIP  # Internal only now
+  selector:
+    app: cicd-demo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cicd-demo-ingress
+  labels:
+    traefik.ingress.kubernetes.io/instance: "kommander-traefik"
+  annotations:
+    kubernetes.io/ingress.class: "kommander-traefik" 
+    cert-manager.io/cluster-issuer: "selfsigned-issuer" 
+spec:
+  ingressClassName: kommander-traefik 
+  tls:
+  - hosts:
+    - cicd-demo.10.2.0.72.nip.io
+    secretName: cicd-demo-tls
+  rules:
+  - host: cicd-demo.10.2.0.72.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cicd-demo-service
+            port:
+              number: 80
