@@ -1,0 +1,11 @@
+# 1. Store the Customer's CA certificate/key in a Secret
+# (Usually done via: kubectl create secret tls customer-ca-secret --cert=ca.crt --key=ca.key)
+
+# 2. Create the Issuer pointing to that Secret
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer # Using ClusterIssuer so all namespaces can use it
+metadata:
+  name: corporate-ca-issuer
+spec:
+  ca:
+    secretName: customer-ca-secret

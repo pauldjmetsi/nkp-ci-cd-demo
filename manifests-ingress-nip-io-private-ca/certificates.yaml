@@ -1,0 +1,32 @@
+# 1. Create a self-signed issuer to sign the Root CA
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-root-issuer
+  namespace: cicd-demo
+spec:
+  selfSigned: {}
+---
+# 2. Create the Root CA Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cicd-demo-root-ca
+  namespace: cicd-demo
+spec:
+  isCA: true
+  commonName: cicd-demo-lab-ca
+  secretName: cicd-demo-root-ca-secret
+  issuerRef:
+    name: selfsigned-root-issuer
+    kind: Issuer
+---
+# 3. Create the actual CA Issuer for your apps
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cicd-demo-ca-issuer
+  namespace: cicd-demo
+spec:
+  ca:
+    secretName: cicd-demo-root-ca-secret
